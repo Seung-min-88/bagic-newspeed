@@ -5,14 +5,14 @@ import lombok.Getter;
 @Getter
 public class PostResponse {
 
-    private Long id;
-    private String nickName;
+    private Long postId;
+    private Long userId;
     private String title;
     private String content;
 
-    public PostResponse(Long id, String nickName, String title, String content) {
-        this.id = id;
-        this.nickName = nickName;
+    public PostResponse(Long postId, Long userId, String title, String content) {
+        this.postId = postId;
+        this.userId = userId;
         this.title = title;
         this.content = content;
     }

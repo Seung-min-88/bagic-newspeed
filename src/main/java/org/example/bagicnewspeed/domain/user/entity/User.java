@@ -3,12 +3,13 @@ package org.example.bagicnewspeed.domain.user.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.bagicnewspeed.common.base.BaseEntity;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

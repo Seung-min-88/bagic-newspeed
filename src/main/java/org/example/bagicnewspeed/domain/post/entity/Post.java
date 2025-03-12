@@ -3,18 +3,19 @@ package org.example.bagicnewspeed.domain.post.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.bagicnewspeed.common.base.BaseEntity;
 import org.example.bagicnewspeed.domain.user.entity.User;
 
 @Getter
 @Entity
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_nickName", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private String title;
@@ -25,4 +26,10 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 }
