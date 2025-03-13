@@ -69,6 +69,13 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
+    public Post postInfo(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다")
+        );
+    }
+
     private PostResponse mapToResponse(Post post) {
         return new PostResponse(
                 post.getPostId(),
