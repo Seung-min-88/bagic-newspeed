@@ -28,7 +28,12 @@ public class UserService {
         );
     }
 
-
+    @Transactional(readOnly = true)
+    public User userInfo(String nickName) {
+        return userRepository.findByNickName(nickName).orElseThrow(
+                ()-> new IllegalArgumentException("유저를 찾을 수 없습니다 닉네임을 확인해주세요")
+        );
+    }
 
     @Transactional(readOnly = true)
     public UserResponse getProfile (String nickName) {

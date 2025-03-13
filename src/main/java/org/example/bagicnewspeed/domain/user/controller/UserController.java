@@ -15,6 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // 프로필 조회
     @GetMapping("/users/{nickName}/profile")
     public UserResponse userProfile(@PathVariable String nickName) {
         return userService.getProfile(nickName);
