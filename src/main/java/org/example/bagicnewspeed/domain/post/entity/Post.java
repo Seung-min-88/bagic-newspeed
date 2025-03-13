@@ -21,6 +21,8 @@ public class Post extends BaseEntity {
     private String title;
     private String content;
 
+    private int likeCount = 0;
+
     public Post(User user, String title, String content) {
         this.user = user;
         this.title = title;
@@ -30,6 +32,16 @@ public class Post extends BaseEntity {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
     }
 
 }

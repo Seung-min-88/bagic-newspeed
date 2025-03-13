@@ -81,7 +81,12 @@ public class PostService {
                 post.getPostId(),
                 post.getUser().getId(),
                 post.getTitle(),
-                post.getContent()
+                post.getContent(),
+                post.getLikeCount()
         );
+    }
+
+    public void increaseLike(Long postId, Long userId) {
+
     }
 }
