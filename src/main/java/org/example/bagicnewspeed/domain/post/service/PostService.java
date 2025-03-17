@@ -13,12 +13,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
 
+    // 게시물 생성
     @Transactional
     public PostResponse createPost(AuthUser authUser, PostRequest postRequest) {
         User user = userService.getUser(authUser);
@@ -29,12 +34,13 @@ public class PostService {
         );
         postRepository.save(post);
         return new PostResponse(
-                post.getPostId(),
-                post.getUser().getId(),
+                post.getId(),
+                post.getUser().getNickName(),
                 post.getTitle(),
                 post.getContent());
     }
 
+    // 게시물 수정
     @Transactional
     public PostResponse updatePost(AuthUser authUser,Long postId, PostRequest postRequest) {
         User user = userService.getUser(authUser);
@@ -51,6 +57,7 @@ public class PostService {
         return mapToResponse(post);
     }
 
+    // 게시물 삭제
     @Transactional
     public void deletePost(AuthUser authUser, Long postId) {
         User user = userService.getUser(authUser);
@@ -63,10 +70,25 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    // 모든 게시물 조회
     @Transactional(readOnly = true)
     public Page<PostResponse> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable).map(this::mapToResponse);
+    }
 
+    // 팔로워 게시물 최신순으로
+    @Transactional(readOnly = true)
+    public Page<PostResponse> findAllFollowsPosts(AuthUser authUser, Pageable pageable) {
+        User user = userService.getUser(authUser);
+//        Follow follow = followService.followingInfo(authUser.getNickName());
+        Page<Post> posts = postRepository.findAllByFollowing(user.getId(), pageable);
+        return posts.map(this::mapToResponse);
+//        return postRepository.findAllByFollowing(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponse> findAllByDate(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return postRepository.findAllPostByDate(startDate, endDate, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -78,15 +100,11 @@ public class PostService {
 
     private PostResponse mapToResponse(Post post) {
         return new PostResponse(
-                post.getPostId(),
-                post.getUser().getId(),
+                post.getId(),
+                post.getUser().getNickName(),
                 post.getTitle(),
                 post.getContent(),
                 post.getLikeCount()
         );
-    }
-
-    public void increaseLike(Long postId, Long userId) {
-
     }
 }

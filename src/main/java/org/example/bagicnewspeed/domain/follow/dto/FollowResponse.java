@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class FollowResponse {
 
-    private String followerNickName;
-    private String followingNickName;
+    private String FollowerNickName;
+    private String FollowingNickName;
 
     public FollowResponse(String followerNickName, String followingNickName) {
-        this.followerNickName = followerNickName;
-        this.followingNickName = followingNickName;
+        FollowerNickName = followerNickName;
+        FollowingNickName = followingNickName;
     }
 }

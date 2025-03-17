@@ -27,6 +27,7 @@ public class UserController {
         userService.updateProfile(authUser, request);
     }
 
+    // 비밀번호 변경
     @PatchMapping("/users/profile/password")
     public void changePassword(@Auth AuthUser authUser, @RequestBody UpdatePasswordRequest request) {
         userService.updatePassword(authUser,request);

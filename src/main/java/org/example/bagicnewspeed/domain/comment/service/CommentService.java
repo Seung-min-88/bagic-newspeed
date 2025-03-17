@@ -13,6 +13,9 @@ import org.example.bagicnewspeed.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -22,27 +25,76 @@ public class CommentService {
     private final UserService userService;
 
     @Transactional
-    public CommentResponse createComment(AuthUser authUser,Long postId, CommentRequest commentRequest) {
-        User user = userService.userInfo(authUser.getNickName());
+    public CommentResponse postComment(AuthUser authUser, Long postId, CommentRequest commentRequest) {
+        User user = userService.getUser(authUser);
         Post post = postService.postInfo(postId);
 
         Comment comment = new Comment(
                 user,
                 post,
-                commentRequest.getContent()
+                commentRequest.getMessage()
         );
         commentRepository.save(comment);
         return new CommentResponse(
-                post.getPostId(),
-                comment.getCommentId(),
-                authUser.getNickName(),
-                commentRequest.getContent()
+                post.getId(),
+                comment.getId(),
+                user.getNickName(),
+                commentRequest.getMessage()
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentResponse> getPostComments(AuthUser authUser, Long postId) {
+        User user = userService.getUser(authUser);
+        Post post = postService.postInfo(postId);
+        List<Comment> comments = commentRepository.findByPost_Id(postId);
+        return comments.stream().map(postComment -> new CommentResponse(
+                post.getId(),
+                postComment.getId(),
+                user.getNickName(),
+                postComment.getMessage()
+        )).collect(Collectors.toList());
+    }
+
+//    @Transactional
+//    public CommentResponse commentByComment(AuthUser authUser,Long postId ,Long commentId, CommentRequest commentRequest) {
+//        User user = userService.getUser(authUser);
+//        Post post = postService.postInfo(postId);
+//        Comment comment = commentRepository.findById(commentId).orElseThrow(
+//                () -> new IllegalArgumentException("작성된 댓글이 없습니다.")
+//        );
+//        Comment comments = new Comment(
+//                user,
+//                post,
+//                commentRequest.getMessage()
+//        );
+//        commentRepository.save(comments);
+//        return new CommentResponse(
+//                post.getId(),
+//                comment.getId(),
+//                user.getNickName(),
+//                commentRequest.getMessage()
+//        );
+//    }
+
+//    @Transactional(readOnly = true)
+//    public List<CommentResponse> getCommentComments(AuthUser authUser, Long postId, Long commentId) {
+//        User user = userService.getUser(authUser);
+//        Post post = postService.postInfo(postId);
+//        commentRepository.findById(commentId).orElseThrow(
+//                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+//        List<Comment> comment = commentRepository.findByComment_id(commentId);
+//        return comment.stream().map(commentComment -> new CommentResponse(
+//                post.getId(),
+//                commentComment.getId(),
+//                user.getNickName(),
+//                commentComment.getMessage()
+//        )).collect(Collectors.toList());
+//    }
+
     @Transactional
     public CommentResponse updateComment(AuthUser authUser,Long postId, Long commentId,CommentRequest commentRequest) {
-        User user = userService.userInfo(authUser.getNickName());
+        User user = userService.getUser(authUser);
         Post post = postService.postInfo(postId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()-> new IllegalArgumentException("작성된 댓글이 없습니다")
@@ -50,18 +102,18 @@ public class CommentService {
         if (comment.getUser().getId() != user.getId()) {
             throw new IllegalArgumentException("작성자만 댓글을 수정할 수 있습니다");
         }
-        comment.update(commentRequest.getContent());
+        comment.update(commentRequest.getMessage());
         return new CommentResponse(
-                post.getPostId(),
-                comment.getCommentId(),
-                authUser.getNickName(),
-                commentRequest.getContent()
+                post.getId(),
+                comment.getId(),
+                user.getNickName(),
+                commentRequest.getMessage()
         );
     }
 
     @Transactional
     public void deleteComment(AuthUser authUser,Long postId, Long commentId) {
-        User user = userService.userInfo(authUser.getNickName());
+        User user = userService.getUser(authUser);
         Post post = postService.postInfo(postId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()-> new IllegalArgumentException("작성한 댓글이 없습니다")
@@ -73,14 +125,6 @@ public class CommentService {
         if (!poster && !commenter) {
             throw new IllegalArgumentException("게시물 작성자 또는 댓글 작성자만 삭제를 할 수 있습니다");
         }
-
-//        if (comment.getUser().getId() != user.getId()) {
-//            throw new IllegalArgumentException("작성자만 댓글을 삭제할 수 있습니다");
-//        }
-//        if (post.getPostId() == user.getId()) {
-//
-//        }
-
         commentRepository.delete(comment);
     }
 

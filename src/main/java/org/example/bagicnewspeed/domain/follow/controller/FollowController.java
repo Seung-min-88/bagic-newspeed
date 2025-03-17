@@ -3,7 +3,8 @@ package org.example.bagicnewspeed.domain.follow.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.bagicnewspeed.domain.auth.annotation.Auth;
 import org.example.bagicnewspeed.domain.auth.dto.AuthUser;
-import org.example.bagicnewspeed.domain.follow.dto.FollowResponse;
+import org.example.bagicnewspeed.domain.follow.dto.FollowerResponse;
+import org.example.bagicnewspeed.domain.follow.dto.FollowingResponse;
 import org.example.bagicnewspeed.domain.follow.service.FollowService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +28,17 @@ public class FollowController {
         followService.disconnectFollow(followingNickName,followerNickName);
     }
 
-    // 팔로우 리스트
-    @GetMapping("/follow/List")
-    public List<FollowResponse> followList(@Auth AuthUser authUser) {
-        List<FollowResponse> follows = followService.followList(authUser);
-        return follows;
+    // 팔로워 리스트
+    @GetMapping("/follower/list")
+    public List<FollowerResponse> followList(@Auth AuthUser authUser) {
+        List<FollowerResponse> followers = followService.followerList(authUser);
+        return followers;
+    }
+
+    // 팔로잉 리스트
+    @GetMapping("/following/list")
+    public List<FollowingResponse> followingList(@Auth AuthUser authUser) {
+        List<FollowingResponse> followings = followService.followingList(authUser);
+        return followings;
     }
 }

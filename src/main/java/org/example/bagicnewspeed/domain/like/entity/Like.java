@@ -9,6 +9,7 @@ import org.example.bagicnewspeed.domain.user.entity.User;
 
 @Entity
 @Getter
+@Table(name = "likes")
 @NoArgsConstructor
 public class Like {
 
@@ -24,21 +25,19 @@ public class Like {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id",nullable = false)
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    private boolean liked;
 
-    public Like(User user, Post post, boolean liked) {
+    public Like(User user, Post post) {
         this.user = user;
         this.post = post;
-        this.liked = liked;
+        this.comment = null;
     }
 
-    public Like(User user, Post post, Comment comment, boolean liked) {
+    public Like(User user, Post post, Comment comment) {
         this.user = user;
         this.post = post;
         this.comment = comment;
-        this.liked = liked;
     }
 }
