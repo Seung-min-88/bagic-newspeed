@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
 
     // 게시물 생성
     @PostMapping("/posts")

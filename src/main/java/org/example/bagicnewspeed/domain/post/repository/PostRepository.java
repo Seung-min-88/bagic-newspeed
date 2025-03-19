@@ -1,7 +1,5 @@
 package org.example.bagicnewspeed.domain.post.repository;
 
-import org.example.bagicnewspeed.domain.follow.entity.Follow;
-import org.example.bagicnewspeed.domain.post.dto.response.PostResponse;
 import org.example.bagicnewspeed.domain.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -21,7 +18,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     AND f.followStatus = 'FOLLOWING'
     ORDER BY p.updatedAt DESC
     """)
-    Page<Post> findAllByFollowing(@Param("userid") Long userId, Pageable pageable);
+    Page<Post> findAllByFollowing(@Param("userId") Long userId, Pageable pageable);
 
-    Page<PostResponse> findAllPostByDate(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    @Query("""
+    SELECT p FROM Post p
+    WHERE p.updatedAt BETWEEN :startTime AND :endTime
+    ORDER BY p.updatedAt DESC
+    """)
+    Page<Post> findAllPostByDate(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }

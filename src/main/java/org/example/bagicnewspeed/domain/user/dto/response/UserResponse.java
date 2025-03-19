@@ -9,8 +9,8 @@ public class UserResponse {
     private String email;
 
 
-    public UserResponse(String email, String nickName) {
-        this.email = email;
+    public UserResponse(String nickName, String email) {
         this.nickName = nickName;
+        this.email = email;
     }
 }

@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +63,7 @@ public class PostService {
                 ()-> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다")
         );
         if (post.getUser().getId() != user.getId()) {
-            throw new IllegalArgumentException("작성자만 게시물을 수정할 수 있습니다");
+            throw new IllegalArgumentException("작성자만 게시물을 삭제할 수 있습니다");
         }
         postRepository.delete(post);
     }
@@ -86,10 +84,14 @@ public class PostService {
 //        return postRepository.findAllByFollowing(pageable);
     }
 
+    // 날짜로 검색
     @Transactional(readOnly = true)
     public Page<PostResponse> findAllByDate(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return postRepository.findAllPostByDate(startDate, endDate, pageable);
+        Page<Post> posts = postRepository.findAllPostByDate(startDate,endDate, pageable);
+//        return postRepository.findAllPostByDate(startDate, endDate, pageable);
+        return posts.map(this::mapToResponse);
     }
+
 
     @Transactional(readOnly = true)
     public Post postInfo(Long postId) {

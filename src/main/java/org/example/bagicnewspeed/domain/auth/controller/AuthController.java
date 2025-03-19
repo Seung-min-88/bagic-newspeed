@@ -1,5 +1,6 @@
 package org.example.bagicnewspeed.domain.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.bagicnewspeed.domain.auth.dto.request.LoginRequest;
 import org.example.bagicnewspeed.domain.auth.dto.request.SignupRequest;
@@ -19,7 +20,7 @@ public class AuthController {
 
     // 회원가입
     @PostMapping("/signup")
-    public void signup(@RequestBody SignupRequest signupRequest) {
+    public void signup(@Valid @RequestBody SignupRequest signupRequest) {
         authService.signup(signupRequest);
     }
 
