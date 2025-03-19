@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -92,6 +93,8 @@ class PostServiceTest {
         // when
         postService.deletePost(authUser, 1L);
         // then
-        assertThat(postRepository.findById(66L)).isEmpty();
+        verify(postRepository).delete(post);
+//        assertThat(postRepository.findById(66L)).isEmpty();
     }
+
 }
