@@ -16,12 +16,12 @@ public class Follow {
 
     // 나를 팔로우 하는 사람
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "follower_id", nullable = false)
+    @JoinColumn(name = "follower_id", nullable = false) // 팔로우 신청한 사람
     private User follower;
 
     // 내가 팔로우 하는 사람
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "following_id", nullable = false)
+    @JoinColumn(name = "following_id", nullable = false) // 필로우 신청 당한 사람
     private User following;
 
     @Enumerated(EnumType.STRING)

@@ -28,14 +28,14 @@ public class FollowController {
         followService.disconnectFollow(followingNickName,followerNickName);
     }
 
-    // 팔로워 리스트
+    // 팔로워 리스트 (나를 팔로우 하는 사람)
     @GetMapping("/follower/list")
     public List<FollowerResponse> followList(@Auth AuthUser authUser) {
         List<FollowerResponse> followers = followService.followerList(authUser);
         return followers;
     }
 
-    // 팔로잉 리스트
+    // 팔로잉 리스트 (내가 팔로우한 사람)
     @GetMapping("/following/list")
     public List<FollowingResponse> followingList(@Auth AuthUser authUser) {
         List<FollowingResponse> followings = followService.followingList(authUser);
