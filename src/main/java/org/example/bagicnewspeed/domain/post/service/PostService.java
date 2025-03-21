@@ -2,6 +2,8 @@ package org.example.bagicnewspeed.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.bagicnewspeed.domain.auth.dto.AuthUser;
+import org.example.bagicnewspeed.domain.follow.entity.Follow;
+import org.example.bagicnewspeed.domain.follow.service.FollowService;
 import org.example.bagicnewspeed.domain.post.dto.request.PostRequest;
 import org.example.bagicnewspeed.domain.post.dto.response.PostResponse;
 import org.example.bagicnewspeed.domain.post.entity.Post;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -78,10 +81,8 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostResponse> findAllFollowsPosts(AuthUser authUser, Pageable pageable) {
         User user = userService.getUser(authUser);
-//        Follow follow = followService.followingInfo(authUser.getNickName());
         Page<Post> posts = postRepository.findAllByFollowing(user.getId(), pageable);
         return posts.map(this::mapToResponse);
-//        return postRepository.findAllByFollowing(pageable);
     }
 
     // 날짜로 검색

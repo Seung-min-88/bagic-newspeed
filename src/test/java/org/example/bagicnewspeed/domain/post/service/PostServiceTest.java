@@ -1,6 +1,10 @@
 package org.example.bagicnewspeed.domain.post.service;
 
 import org.example.bagicnewspeed.domain.auth.dto.AuthUser;
+import org.example.bagicnewspeed.domain.follow.entity.Follow;
+import org.example.bagicnewspeed.domain.follow.enums.FollowStatus;
+import org.example.bagicnewspeed.domain.follow.repository.FollowRepository;
+import org.example.bagicnewspeed.domain.follow.service.FollowService;
 import org.example.bagicnewspeed.domain.post.dto.request.PostRequest;
 import org.example.bagicnewspeed.domain.post.dto.response.PostResponse;
 import org.example.bagicnewspeed.domain.post.entity.Post;
@@ -15,8 +19,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +42,8 @@ class PostServiceTest {
     private PostRepository postRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private FollowRepository followRepository;
     @InjectMocks
     private PostService postService;
 
@@ -94,7 +106,24 @@ class PostServiceTest {
         postService.deletePost(authUser, 1L);
         // then
         verify(postRepository).delete(post);
-//        assertThat(postRepository.findById(66L)).isEmpty();
+    }
+
+    @Test
+    void 모든_게시물을_조회한다() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Post post1 = new Post(new User("user1", "user1@email.com", "1234User1"), "제목1", "내용1");
+        Post post2 = new Post(new User("user2", "user2@email.com", "1234User2"), "제목2", "내용2");
+        Post post3 = new Post(new User("user3", "user3@email.com", "1234User3"), "제목3", "내용3");
+        Post post4 = new Post(new User("user4", "user4@email.com", "1234User4"), "제목4", "내용4");
+        Post post5 = new Post(new User("user5", "user5@email.com", "1234User5"), "제목5", "내용5");
+
+        Page<Post> postPage = new PageImpl<>(List.of(post1, post2, post3, post4, post5), pageable, 5);
+        given(postRepository.findAll(pageable)).willReturn(postPage);
+
+        Page<PostResponse> responses = postService.getAllPosts(pageable);
+
+        assertThat(responses.getTotalElements()).isEqualTo(5);
+        assertThat(responses.getContent()).hasSize(5);
     }
 
 }

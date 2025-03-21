@@ -90,4 +90,24 @@ class CommentServiceTest {
         assertNotNull(update);
         assertThat(comment.getMessage()).isEqualTo(commentRequest.getMessage());
     }
+
+    @Test
+    void 댓글을_삭제한다() {
+        AuthUser authUser = new AuthUser(1L, "닉네임", "test@email.com");
+        User user = new User("닉네임", "test@email.com","encodedPassword");
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Post post = new Post(user, "테스트제목", "테스트내용");
+        ReflectionTestUtils.setField(post, "id", 1L);
+        Comment comment = new Comment(user, post, "테스트입니다");
+        ReflectionTestUtils.setField(comment, "id", 2L);
+
+        given(userService.getUser(authUser)).willReturn(user);
+        given(postService.postInfo(1L)).willReturn(post);
+        given(commentRepository.findById(2L)).willReturn(Optional.of(comment));
+
+        commentService.deleteComment(authUser, 1L, 2L);
+
+        verify(commentRepository).delete(comment);
+    }
+
 }
